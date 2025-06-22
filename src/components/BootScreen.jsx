@@ -13,7 +13,7 @@ const BootScreen = () => {
   return (
     <div className="w-full h-screen bg-black flex flex-col items-center justify-end">
       <div className='h-[55%] flex items-end'>
-        <img src="/boot.jpg" alt="Apple" className="w-15 h-15 animate-fadeIn" />
+        <img src="/boot.png" alt="Apple" className="w-15 h-15 animate-fadeIn" />
       </div>
       <div className='h-[45%] flex items-end'>
         <div className="border-[0.00001px] border-[#646464] w-25 h-[2.2px] bg-gray-600 rounded overflow-hidden mb-[25%]">
