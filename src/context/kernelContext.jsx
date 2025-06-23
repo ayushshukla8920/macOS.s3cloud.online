@@ -6,6 +6,40 @@ export const KernelProvider = ({ children }) => {
   const [isBooting, setIsBooting] = useState(false);
   const [isPowerOn, setisPowerOn] = useState(false);
   const [isfullscreen, setisfullscreen] = useState(false);
+  const [showAppleMenu, setShowAppleMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const [docksize, setdocksize] = useState({
+    "main": {
+      "pt": 8,
+      "px": 16,
+      "pb": 4,
+      "rounded": 16,
+      "gap": 12
+    },
+    "icon": {
+      "w": 50,
+      "h": 50,
+      "mb": 8
+    },
+    "dot": {
+      "w": 4,
+      "h": 4,
+      "bottom": -2
+    },
+    "divider": {
+      "w": 1,
+      "h": 56,
+      "mx": 8,
+      "mb": 4
+    },
+    "tooltip": {
+      "bottom": 70,
+      "text": 10,
+      "px": 8,
+      "py": 4
+    }
+  })
 
   useEffect(() => {
     const handler = () => setisfullscreen(!!document.fullscreenElement);
@@ -44,7 +78,7 @@ export const KernelProvider = ({ children }) => {
   };
 
   return (
-    <KernelContext.Provider value={{ isBooting, setIsBooting, bootmacOS, isPowerOn, setisPowerOn, enterFullscreen, exitFullscreen, isfullscreen }}>
+    <KernelContext.Provider value={{ showMenu, setShowMenu, isBooting, setIsBooting, bootmacOS, isPowerOn, setisPowerOn, enterFullscreen, exitFullscreen, isfullscreen, docksize, setdocksize }}>
       {children}
     </KernelContext.Provider>
   );
