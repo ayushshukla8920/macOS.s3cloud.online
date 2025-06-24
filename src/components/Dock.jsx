@@ -1,35 +1,45 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useKernelContext } from '../context/kernelContext';
-
-const dockApps = [
-  { name: 'Finder', icon: '/icons/finder.png', isOpen: true },
-  { name: 'Launchpad', icon: '/icons/launchpad.png', isOpen: false },
-  { name: 'Safari', icon: '/icons/safari.png', isOpen: true },
-  { name: 'Notes', icon: '/icons/notes.png', isOpen: false },
-  { name: 'Settings', icon: '/icons/settings.png', isOpen: true },
-];
+import { useAppContext } from '../context/AppContext';
 
 const Dock = () => {
   const d = useKernelContext().docksize;
+  const { dockApps, openSafari } = useAppContext();
   const { setdocksize } = useKernelContext();
   const resizing = useRef(false);
   const lastY = useRef(null);
 
+  // Animation state for bouncing icons
+  const [bounceMap, setBounceMap] = useState({});
+
+  const handleIconClick = (app) => {
+    if(app.name != 'Launchpad'){
+    // Start bounce animation
+      setBounceMap(prev => ({ ...prev, [app.name]: true }));
+
+      // Call opener if defined
+      
+      // Remove bounce class after animation ends
+      setTimeout(() => {
+        setBounceMap(prev => ({ ...prev, [app.name]: false }));
+        if (app.opener) app.opener();
+      }, 400); // match animation duration
+    }
+  };
+
   const handleMouseDown = (e) => {
     resizing.current = true;
     lastY.current = e.clientY;
-    
+
     const handleMouseMove = (e) => {
       if (!resizing.current) return;
-      
+
       const deltaY = e.clientY - lastY.current;
       lastY.current = e.clientY;
-      
       const direction = deltaY > 0 ? -1 : 1;
-      
+
       setdocksize(prev => {
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-        
         return {
           main: {
             pt: clamp(prev.main.pt + direction, 0, 10),
@@ -51,7 +61,7 @@ const Dock = () => {
           divider: {
             w: prev.divider.w,
             h: clamp(prev.divider.h + direction * 4, 24, 96),
-            mx: clamp(prev.divider.mx + direction*0.5, 5, 8),
+            mx: clamp(prev.divider.mx + direction * 0.5, 5, 8),
             mb: clamp(prev.divider.mb + direction * 0.5, 0, 8),
           },
           tooltip: {
@@ -76,7 +86,7 @@ const Dock = () => {
 
   return (
     <div 
-      className="select-none fixed bottom-1 left-1/2 -translate-x-1/2 backdrop-blur-md bg-white/30 border border-white/20 flex items-end shadow-lg z-50"
+      className="select-none fixed bottom-1 left-1/2 -translate-x-1/2 backdrop-blur-md bg-white/30 border border-white/20 flex items-end shadow-lg z-50 overflow-visible"
       style={{
         paddingTop: `${d.main.pt}px`,
         paddingBottom: `${d.main.pb}px`,
@@ -89,11 +99,13 @@ const Dock = () => {
       {dockApps.map((app) => (
         <div
           key={app.name}
-          className="flex items-center justify-center flex-col h-full transition-transform duration-200 relative group"
+          className="flex items-center justify-center flex-col h-full transition-transform duration-200 relative group overflow-visible"
         >
           <img
             src={app.icon}
             alt={app.name}
+            onClick={() => handleIconClick(app)}
+            className={`${bounceMap[app.name] ? 'bounce-once' : ''} overflow-visible`}
             style={{
               width: `${d.icon.w}px`,
               height: `${d.icon.h}px`,

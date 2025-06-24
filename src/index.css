@@ -63,3 +63,22 @@ h1{
   margin: 0;
   padding: 0;
 }
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: ease-out;
+  }
+  50% {
+    transform: translateY(-50px);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateY(0);
+    animation-timing-function: ease-out;
+  }
+}
+.bounce-once {
+  animation: bounce 1s ease forwards;
+}
+
+
